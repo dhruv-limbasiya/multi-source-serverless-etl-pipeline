@@ -1,46 +1,77 @@
 version: 0.2
 
 phases:
+  install:
+    runtime-versions:
+      python: 3.11
+
+    commands:
+      - echo "========== INSTALL =========="
+      - python --version
+      - aws --version
+
   build:
     commands:
+      - echo "========== BUILD START =========="
+
+      ####################################################
+      # Earthquake Lambda
+      ####################################################
       - echo "Packaging Earthquake Lambda..."
-      - rm -rf earthquake_build
+      - rm -rf earthquake_build earthquake.zip
       - mkdir earthquake_build
       - cp -r earthquake/* earthquake_build/
       - cd earthquake_build
       - zip -r ../earthquake.zip .
       - cd ..
 
+      ####################################################
+      # Weather Lambda
+      ####################################################
       - echo "Packaging Weather Lambda..."
-      - rm -rf weather_build
+      - rm -rf weather_build weather.zip
       - mkdir weather_build
       - cp -r weather/* weather_build/
       - cd weather_build
       - zip -r ../weather.zip .
       - cd ..
 
+      ####################################################
+      # Employee Lambda
+      ####################################################
       - echo "Packaging Employee Lambda..."
-      - rm -rf employee_build
+      - rm -rf employee_build employee.zip
       - mkdir employee_build
       - cp -r employee/* employee_build/
       - cd employee_build
       - zip -r ../employee.zip .
       - cd ..
 
+      ####################################################
+      # Verify AWS Identity
+      ####################################################
+      - echo "========== AWS Identity =========="
+      - aws sts get-caller-identity
+
+      ####################################################
+      # Deploy Earthquake Lambda
+      ####################################################
       - echo "Deploying Earthquake Lambda..."
-      - aws lambda update-function-code \
-          --function-name Earthquake_automated_pipeline \
-          --zip-file fileb://earthquake.zip
+      - aws lambda update-function-code --function-name Earthquake_automated_pipeline --zip-file fileb://earthquake.zip
 
+      ####################################################
+      # Deploy Weather Lambda
+      ####################################################
       - echo "Deploying Weather Lambda..."
-      - aws lambda update-function-code \
-          --function-name Weather_ETL \
-          --zip-file fileb://weather.zip
+      - aws lambda update-function-code --function-name Weather_ETL --zip-file fileb://weather.zip
 
+      ####################################################
+      # Deploy Employee Lambda
+      ####################################################
       - echo "Deploying Employee Lambda..."
-      - aws lambda update-function-code \
-          --function-name Employee_ETL \
-          --zip-file fileb://employee.zip
+      - aws lambda update-function-code --function-name Employee_ETL --zip-file fileb://employee.zip
+
+      - echo "========== DEPLOYMENT COMPLETED =========="
 
 artifacts:
   files:
