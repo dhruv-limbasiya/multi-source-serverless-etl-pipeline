@@ -303,26 +303,6 @@ CloudWatch Logs records:
 
 ---
 
-# 📸 Screenshots
-
-Place screenshots inside:
-
-```
-screenshots/
-```
-
-Suggested screenshots:
-
-- S3 Bucket
-- Lambda Functions
-- DynamoDB Tables
-- CloudWatch Logs
-- CodePipeline
-- CodeBuild
-- GitHub Actions
-
----
-
 # 🧪 Testing
 
 Upload sample files into S3.
